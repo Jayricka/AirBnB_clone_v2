@@ -3,6 +3,8 @@
 import json
 import os
 from models.base_model import BaseModel
+from models.state import State
+
 
 class FileStorage:
     """Class to manage serialization and deserialization of instances."""
