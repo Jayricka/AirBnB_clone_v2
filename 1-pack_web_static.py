@@ -1,34 +1,17 @@
 #!/usr/bin/env python3
-"""Module: 1-pack_web_static"""
+"""Fabric script that generates a .tgz archive from the contents of the web_static"""
 
 from fabric.api import local
 from datetime import datetime
 import os
+import collections.abc as collections_abc
 
 def do_pack():
-    """Generates a .tgz archive from the contents of the web_static folder.
-
-    Returns:
-        str: Archive path if successfully generated, None otherwise.
-    """
-    # Create the versions directory if it doesn't exist
-    if not os.path.exists("versions"):
-        local("mkdir -p versions")
-
-    # Generate archive path
-    now = datetime.utcnow()
-    archive_path = "versions/web_static_{}{}{}{}{}{}.tgz".format(
-        now.year, now.month, now.day, now.hour, now.minute, now.second)
-
-    # Compress web_static contents into the archive
-    result = local("tar -cvzf {} web_static".format(archive_path))
-
-    # Check if the archive was created successfully
-    if result.succeeded:
-        return archive_path
-    else:
-        return None
+    """Creates a compressed archive from the web_static folder"""
+    if not os.path.exists("versions"): os.makedirs("versions")
+    archive_name = "web_static_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".tgz"
+    result = local("tar -cvzf versions/{} web_static".format(archive_name))
+    return "versions/{}".format(archive_name) if result.succeeded else None
 
 if __name__ == "__main__":
-    # Run the do_pack function when the script is executed
     do_pack()
